@@ -2,6 +2,7 @@
 Tests the collect_learnings function in the cli/collect module.
 """
 
+
 import pytest
 
 # def test_collect_learnings(monkeypatch):
