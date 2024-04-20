@@ -19,7 +19,8 @@ Choose **one** of:
     - `export OPENAI_API_KEY=[your api key]`
 - .env file:
     - Create a copy of `.env.template` named `.env`
-    - Add your OPENAI_API_KEY in .env
+    Adding an api base and allowing the use of any open source LLM including litellm which already have similar endpoint as closed src LLMs
+    allowing the open source community to participate and experience fully open source projects without limitations.
 - Custom model:
     - See [docs](https://gpt-engineer.readthedocs.io/en/latest/open_models.html), supports local model, azure, etc.
 
