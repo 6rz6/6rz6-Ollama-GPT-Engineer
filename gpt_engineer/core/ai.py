@@ -12,7 +12,6 @@ Functions:
     serialize_messages(messages: List[Message]) -> str
         Serialize a list of messages to a JSON string.
 """
-
 from __future__ import annotations
 
 import json
@@ -87,7 +86,7 @@ class AI:
 
     def __init__(
         self,
-        model_name="gpt-4-turbo",
+        model_name="gpt-4-0125-preview",
         temperature=0.1,
         azure_endpoint=None,
         streaming=True,
@@ -107,11 +106,7 @@ class AI:
         self.azure_endpoint = azure_endpoint
         self.model_name = model_name
         self.streaming = streaming
-        self.vision = (
-            ("vision-preview" in model_name)
-            or ("gpt-4-turbo" in model_name and "preview" not in model_name)
-            or ("claude" in model_name)
-        )
+        self.vision = "vision" in model_name
         self.llm = self._create_chat_model()
         self.token_usage_log = TokenUsageLog(model_name)
 
@@ -352,15 +347,8 @@ class AI:
                 streaming=self.streaming,
                 callbacks=[StreamingStdOutCallbackHandler()],
             )
-        elif "claude" in self.model_name:
-            return ChatAnthropic(
-                model=self.model_name,
-                temperature=self.temperature,
-                callbacks=[StreamingStdOutCallbackHandler()],
-                streaming=self.streaming,
-                max_tokens_to_sample=4096,
-            )
-        elif self.vision:
+
+        if self.vision:
             return ChatOpenAI(
                 model=self.model_name,
                 temperature=self.temperature,
@@ -368,13 +356,30 @@ class AI:
                 callbacks=[StreamingStdOutCallbackHandler()],
                 max_tokens=4096,  # vision models default to low max token limits
             )
-        else:
-            return ChatOpenAI(
+
+        if "claude" in self.model_name:
+            return ChatAnthropic(
                 model=self.model_name,
                 temperature=self.temperature,
-                streaming=self.streaming,
                 callbacks=[StreamingStdOutCallbackHandler()],
+                streaming=True,
+                max_tokens_to_sample=4096,
             )
+
+        if "claude" in self.model_name:
+            return ChatAnthropic(
+                model=self.model_name,
+                temperature=self.temperature,
+                callbacks=[StreamingStdOutCallbackHandler()],
+                max_tokens_to_sample=4096,
+            )
+
+        return ChatOpenAI(
+            model=self.model_name,
+            temperature=self.temperature,
+            streaming=self.streaming,
+            callbacks=[StreamingStdOutCallbackHandler()],
+        )
 
 
 def serialize_messages(messages: List[Message]) -> str:
@@ -384,8 +389,7 @@ def serialize_messages(messages: List[Message]) -> str:
 class ClipboardAI(AI):
     # Ignore not init superclass
     def __init__(self, **_):  # type: ignore
-        self.vision = False
-        self.token_usage_log = TokenUsageLog("clipboard_llm")
+        pass
 
     @staticmethod
     def serialize_messages(messages: List[Message]) -> str:
