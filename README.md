@@ -1,17 +1,4 @@
-# Ollama-Multi-threaded-UI-Integration for GPT-Engineer 
-
-[![Discord Follow](https://dcbadge.vercel.app/api/server/8tcDQ89Ej2?style=flat)](https://discord.gg/8tcDQ89Ej2)
-[![GitHub Repo stars](https://img.shields.io/github/stars/gpt-engineer-org/gpt-engineer?style=social)](https://github.com/gpt-engineer-org/gpt-engineer)
-[![Twitter Follow](https://img.shields.io/twitter/follow/antonosika?style=social)](https://twitter.com/antonosika)
-
-GPT-engineer lets you:
-- Specify a software in natural language
-- Sit back and watch as an AI writes and executes the code
-- Ask the AI to implement improvements
-
-## Getting Started
-
-### Install gpt-engineer
+Integration of additional LLMs in this version.
 
 For **stable** release:
 
