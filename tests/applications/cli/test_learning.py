@@ -3,6 +3,7 @@ from unittest import mock
 from gpt_engineer.applications.cli import learning
 from gpt_engineer.applications.cli.learning import Learning
 from gpt_engineer.core.default.disk_memory import DiskMemory
+from gpt_engineer.core.prompt import Prompt
 
 
 def test_human_review_input_no_concent_returns_none():
@@ -13,9 +14,10 @@ def test_human_review_input_no_concent_returns_none():
 
 
 def test_human_review_input_consent_code_ran_no_comments():
-    with mock.patch.object(
-        learning, "check_collection_consent", return_value=True
-    ), mock.patch("builtins.input", return_value="y"):
+    with (
+        mock.patch.object(learning, "check_collection_consent", return_value=True),
+        mock.patch("builtins.input", return_value="y"),
+    ):
         result = learning.human_review_input()
 
     assert result.raw == "y, y, "
@@ -25,9 +27,10 @@ def test_human_review_input_consent_code_ran_no_comments():
 
 
 def test_human_review_input_consent_code_ran_not_perfect_but_useful_no_comments():
-    with mock.patch.object(
-        learning, "check_collection_consent", return_value=True
-    ), mock.patch("builtins.input", side_effect=["y", "n", "y", ""]):
+    with (
+        mock.patch.object(learning, "check_collection_consent", return_value=True),
+        mock.patch("builtins.input", side_effect=["y", "n", "y", ""]),
+    ):
         result = learning.human_review_input()
 
     assert result.raw == "y, n, y"
@@ -84,7 +87,7 @@ def test_extract_learning():
     memory.to_json.return_value = {"prompt": "prompt"}
 
     result = learning.extract_learning(
-        "prompt",
+        Prompt("prompt"),
         "model_name",
         0.01,
         ("prompt_tokens", "completion_tokens"),
